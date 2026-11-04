@@ -1,0 +1,1 @@
+Adds a researched color picker for containers and labels: rainbow brush icon, custom RGB/hex colors, opacity and live preview. Unlock after Stickers for 25% more. Colors copy and save with a built-in fallback for safe removal.

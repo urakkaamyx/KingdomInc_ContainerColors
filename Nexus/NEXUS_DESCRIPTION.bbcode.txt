@@ -1,0 +1,50 @@
+[b]Custom Container Colors - 1.2.0[/b]
+Choose any RGB color for your Kingdom Inc containers and labels with a live color picker, hex entry, opacity controls and quick swatches.
+
+[b]Features[/b]
+[list]
+[*]Hue strip and saturation/brightness picker with immediate preview.
+[*]Six-digit hex RGB entry, opacity control and quick color swatches.
+[*]Container Colors research directly after Stickers on the decoration branch. It costs 25% more than the actual Stickers price, rounded up, using the same currencies and native prestige reductions.
+[*]Rainbow paintbrush research icon with a medieval gold plus.
+[*]Custom colors survive saving, native copying and Sharable Blueprints export/import with this plugin installed.
+[*]Each container and label keeps a valid built-in fallback color so it remains loadable after removing the plugin.
+[/list]
+Original styles, resizing, locking and anchoring remain available. Label text editing and automatic sizing remain available, with the color picker below the text field. Stickers keep their native appearance and controls.
+
+[b]Requirements[/b]
+Kingdom Inc's Unity Mono build on Windows. Tested with Release v1.0.10, Unity 6000.3.27f2 and BepInEx 5.4.23.6.
+[url=https://github.com/BepInEx/BepInEx/releases/tag/v5.4.23.6]BepInEx 5 for Windows x64[/url] is required and is not bundled. No companion mod is required.
+
+[b]Installation[/b]
+1. Close Kingdom Inc.
+2. Install BepInEx 5 into the game folder beside KingdomInc.exe if needed.
+3. Extract this mod's ZIP into that same game folder.
+4. Confirm this path exists: BepInEx/plugins/ContainerColors/ContainerColors.dll
+5. Start the game and research Container Colors after Stickers. Open a container or label's existing edit/options menu to find Custom color.
+
+[b]Using the picker[/b]
+Choose a hue, then saturation and brightness, or type six hex digits such as #AF78E2 and press Enter. Drag Opacity to adjust transparency. Changes apply immediately.
+The original five swatches restore native styles. Original color removes custom styling and uses the decoration's automatically chosen built-in fallback.
+
+[b]Updating[/b]
+Close the game, replace the DLL above and restart. Existing custom-colored containers retain their appearance, but editing their custom colors requires Container Colors research. Old saves do not receive the research automatically.
+
+[b]Removal and saves[/b]
+Close the game and delete BepInEx/plugins/ContainerColors. Containers and labels load using their built-in fallback color and normal native opacity. No cleanup tool or save conversion is required.
+[b]Saving without the plugin discards custom color metadata and its research unlock.[/b] Keep a save backup if you may reinstall and want the exact custom colors back.
+
+[b]Compatibility and limits[/b]
+Passed 131 isolated runtime checks and 134 companion checks with a disposable kingdom, including actual tech-tree purchase, picker raycasts, saving/loading, cloning, workshop switching, native fallback after removing the production patches, and Sharable Blueprints capture/parse/import.
+Companion mode loaded Party Node, Sharable Blueprints, Factory API, Ledger, Leyline Conduits, Path Finder and Nightmare Distiller Fix. It checks this feature and its blueprint path, rather than every companion feature.
+Manual installation is supported; Vortex deployment is untested. Game updates or another plugin replacing decoration JSON, research costs or the container options UI may require a compatibility update.
+
+[b]Version 1.2.0[/b]
+The existing picker now works with labels, including hex RGB and opacity. Label text editing, automatic sizing, native borders, copying and safe removal fallback are preserved. The same Container Colors research unlocks both containers and labels.
+
+[b]Credits and permissions[/b]
+By rockyamyx / Urakka. Research icon and promotional thumbnail were generated with AI. The thumbnail uses the established Kingdom Inc mod template and is promotional artwork, not a gameplay screenshot. Picker and tech-tree images in the gallery are actual disposable-runtime screenshots.
+The neutral container and label backgrounds are derived from the installed game at runtime. No original game textures, game assemblies, BepInEx binaries or user saves are bundled. No open-source license has been selected for this project; the page's permissions apply.
+
+[b]Troubleshooting[/b]
+Include BepInEx/LogOutput.log, the game and mod versions, and the observed behavior in a bug report. If the picker is missing, first confirm that Container Colors research has been purchased.
