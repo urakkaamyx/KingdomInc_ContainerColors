@@ -2,6 +2,7 @@ using System;
 using Assets.Behaviour.UI;
 using Assets.Source.Player;
 using UnityEngine;
+using KingdomFoundation.Api;
 
 namespace KingdomContainerColors
 {
@@ -12,23 +13,30 @@ namespace KingdomContainerColors
         internal const double PriceMultiplier = 1.25;
         internal static bool Unlocked => GamePlayer.Current != null && GamePlayer.Current.HasTech(TechNode.Get(TechId));
 
+        internal static ITechNode Registration { get; private set; }
         internal static void EnsureRegistered()
         {
-            if (TechNode.Get(TechId) != null) return;
-            var stickers = TechNode.Get(PreviousId);
-            if (stickers == null) throw new InvalidOperationException("Stickers research is unavailable.");
-            TechNode.Add(new TechNode(TechId) {
-                Name = "Container Colors",
-                Description = "Unlock a color picker for containers and labels. Choose custom colors, enter hex RGB values, and adjust opacity.",
-                NodeType = TechNodeType.Decoration, Previous = stickers,
-                RelativePosition = new Vector2Int(-180, 0), IconName = ColorArtwork.IconId,
-                CostTier = stickers.CostTier, CostCurrency = stickers.CostCurrency,
-                CostMultiplier = PriceMultiplier,
-                OnUnlock = player => {
-                    var popup = GameUI.Instance ? GameUI.Instance.DecoPopup : null;
-                    if (popup && popup.gameObject.activeInHierarchy) ContainerPicker.Open(popup);
-                }
-            });
+            if (Registration?.IsRegistered == true) return;
+            var stickers = TechNode.Get(PreviousId) ?? throw new InvalidOperationException("Stickers research is unavailable.");
+            // Retain the saved ID; native prerequisites belong in Requirements,
+            // while Previous/Root links are reserved for Foundation-owned nodes.
+            Registration = FoundationApi.CreateTechNode(new TechNodeDefinition(TechId, "Container Colors", new Vector2(-800, 0),
+                "Unlock a color picker for containers and labels. Choose custom colors, enter hex RGB values, and adjust opacity.",
+                ColorArtwork.Sprite, new TechNodeOptions(nodeType: TechNodeType.Decoration, costTier: stickers.CostTier,
+                    costMultiplier: PriceMultiplier, requirements: new[] { PreviousId })));
+            var native = ((INativeTechNode)Registration).NativeNode;
+            native.CostCurrency = stickers.CostCurrency;
+            native.ResetCost();
+            Registration.Clicked += OnUnlock;
+        }
+        static void OnUnlock(ITechNode node)
+        {
+            var popup = GameUI.Instance ? GameUI.Instance.DecoPopup : null;
+            if (popup && popup.gameObject.activeInHierarchy) ContainerPicker.Open(popup);
+        }
+        internal static void Release()
+        {
+            Registration?.Dispose(); Registration = null;
         }
         internal static CurrencyCollection Price()
         {

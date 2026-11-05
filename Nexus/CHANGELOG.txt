@@ -1,3 +1,8 @@
+1.3.0
+- Moved Container Colors research to Tech Tree > Mods.
+- Preserved existing research purchases, Stickers prerequisite and pricing.
+- Simplified installation and usage documentation.
+
 1.2.0
 - Extended the existing color picker to labels, including hex RGB and opacity.
 - Preserved label text editing, automatic sizing, native borders and style buttons.

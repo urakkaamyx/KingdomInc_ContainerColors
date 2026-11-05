@@ -13,6 +13,8 @@ using Assets.Source.Flow.Elements;
 using Assets.Source.Player;
 using Assets.Source.Util;
 using BepInEx;
+using BepInEx.Bootstrap;
+using KingdomFoundation.Api;
 using HarmonyLib;
 using LightJson;
 using UnityEngine;
@@ -219,7 +221,7 @@ namespace KingdomContainerColors
                 GameUI.Instance.TogglePopupMenu(GameUI.Instance.DecoPopup, false);
                 // Remove every production hook while retaining only diagnostic save/
                 // achievement guards. Newly loaded objects now run original game code.
-                hooks.UnpatchSelf(); ColorRendering.Release();
+                hooks.UnpatchSelf(); ColorResearch.Release(); ColorRendering.Release();
                 Check(!Harmony.HasAnyPatches(Id), "All Container Colors production patches removed");
                 // Remove the custom lookup too, so native save loading must take
                 // the same unknown-research path as a game without this plugin.
@@ -251,6 +253,7 @@ namespace KingdomContainerColors
                 { "passed", error == null }, { "version", Version }, { "count", checks.Count }, { "error", error ?? "" },
                 { "dllSha256", Hash(typeof(Plugin).Assembly.Location) }, { "gameVersion", Application.version }, { "unityVersion", Application.unityVersion },
                 { "bepInExVersion", typeof(BaseUnityPlugin).Assembly.GetName().Version.ToString() },
+                { "foundationVersion", typeof(FoundationApi).Assembly.GetName().Version.ToString() }, { "foundationSha256", Hash(typeof(FoundationApi).Assembly.Location) },
                 { "stickersPrice", stickersPrice }, { "containerColorsPrice", colorsPrice },
                 { "checks", new JsonArray(checks.Select(s => new JsonValue(s)).ToArray()) }
             };
@@ -266,14 +269,18 @@ namespace KingdomContainerColors
         {
             var fixture = new GamePlayer(); GamePlayer.Current = fixture;
             var research = TechNode.Get(ColorResearch.TechId); var stickers = TechNode.Get(ColorResearch.PreviousId);
+            Check(Chainloader.PluginInfos.TryGetValue("urakka.kingdominc.foundation", out var framework) && framework.Metadata.Version >= new Version(0, 5, 0), "Foundation 0.5.0+ loads before Container Colors");
+            Check(FoundationApi.TechNodes.TryGet(ColorResearch.TechId, out var registration) && ReferenceEquals(registration, ColorResearch.Registration)
+                && ((INativeTechNode)registration).NativeNode == research, "Foundation public registry owns the legacy Container Colors research ID");
+            Check(!(Harmony.GetPatchInfo(AccessTools.Constructor(typeof(GamePlayer)))?.Owners.Contains(Id) ?? false), "Container Colors does not patch player construction for research registration");
             int count = TechNode.Count; ColorResearch.EnsureRegistered();
             Check(TechNode.Count == count && TechNode.Nodes.Count(t => t.Identifier == ColorResearch.TechId) == 1,
                 "Research is registered once before player research arrays are allocated");
-            Check(research != null && research.Previous == stickers && research.NodeType == TechNodeType.Decoration,
-                "Container Colors research follows Stickers on the decoration branch");
-            Check(research.Root == stickers.Root && research.Position == stickers.Position + new Vector2Int(-180, 0),
-                "Research continues the native Stickers chain with matching spacing");
-            Check(research.IconName == ColorArtwork.IconId && SpriteLibrary.Get(research.IconName) == ColorArtwork.Sprite,
+            Check(research != null && research.Previous == null && research.AllRequirements.Contains(stickers) && research.NodeType == TechNodeType.Decoration,
+                "Container Colors research retains Stickers as its prerequisite");
+            Check(research.Root == null && research.ForceRootNode && research.Position == new Vector2(-800, 0),
+                "Research uses its own Foundation Mods branch");
+            Check(ColorResearch.Registration.Definition.Icon == ColorArtwork.Sprite && SpriteLibrary.Get(research.IconName) == ColorArtwork.Sprite,
                 "Native research sprite lookup resolves the rainbow brush and medieval plus emblem");
             var icon = ColorArtwork.Sprite.texture; var pixels = icon.GetPixels32();
             Check(icon.width == 32 && icon.height == 32 && icon.filterMode == FilterMode.Point && pixels.Any(p => p.a == 0) && pixels.Any(p => p.a == 255),
@@ -299,12 +306,25 @@ namespace KingdomContainerColors
             var reloaded = GamePlayer.FromJson(fixture.ToJson());
             Check(!ColorResearch.Unlocked && !reloaded.HasTech(research) && ColorData.TryGet(reloaded.ActiveFlow.Decorations[0], out _),
                 "Earlier colored saves load without auto-granting research or discarding colors");
+            fixture.AddTech(research);
+            var legacy = GamePlayer.FromJson(fixture.ToJson());
+            Check(legacy.HasTech("container_colors") && ColorData.TryGet(legacy.ActiveFlow.Decorations[0], out _), "Existing unlocked saves retain research and color after Foundation migration");
         }
         void VerifyResearchPurchase(string directory)
         {
             var research = TechNode.Get(ColorResearch.TechId); var player = GamePlayer.Current;
-            GameUI.Instance.ToggleTechMenu(true); TechTreeMenu.Instance.FocusNode(research);
+            GameUI.Instance.ToggleTechMenu(true);
+            Check(!TechTreeMenu.Instance.Nodes.Any(n => n.Tech.Identifier == ColorResearch.TechId), "Base Game tab excludes Container Colors research");
+            Resources.FindObjectsOfTypeAll<Button>().Single(b => b.name == "ModsTab" && b.gameObject.activeInHierarchy).onClick.Invoke();
+            Check(TechTreeMenu.Instance.Nodes.Count(n => n.Tech.Identifier == ColorResearch.TechId) == 1, "Mods tab displays exactly one Container Colors research node");
+            Resources.FindObjectsOfTypeAll<Button>().Single(b => b.name == "Base GameTab" && b.gameObject.activeInHierarchy).onClick.Invoke();
+            Check(!TechTreeMenu.Instance.Nodes.Any(n => n.Tech.Identifier == ColorResearch.TechId), "Returning to Base Game removes the custom research view");
+            TechTreeMenu.Instance.FocusNode(research);
             var node = TechTreeMenu.Instance.Nodes.First(n => n.Tech == research);
+            Canvas.ForceUpdateCanvases();
+            var cardBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(node.transform.parent, node.transform);
+            Check(TechTreeMenu.Instance.Nodes.Where(n => n != node).All(n => !cardBounds.Intersects(
+                RectTransformUtility.CalculateRelativeRectTransformBounds(n.transform.parent, n.transform))), "Container Colors research card does not overlap another Mods card");
             Check(node && node.GetTooltipTitle() == "Container Colors" && node.Tech.IsLocked,
                 "Native tech tree displays Container Colors locked behind Stickers");
             var click = new PointerEventData(EventSystem.current) { button = PointerEventData.InputButton.Left };

@@ -1,1 +1,1 @@
-Adds a researched color picker for containers and labels: rainbow brush icon, custom RGB/hex colors, opacity and live preview. Unlock after Stickers for 25% more. Colors copy and save with a built-in fallback for safe removal.
+Choose any RGB color for containers and labels with a live picker, hex entry, opacity and quick swatches. Unlock Container Colors under Tech Tree > Mods after Stickers. Saved colors retain a built-in fallback for safe removal.

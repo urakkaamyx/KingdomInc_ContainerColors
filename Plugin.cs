@@ -12,23 +12,23 @@ using UnityEngine;
 namespace KingdomContainerColors
 {
     [BepInPlugin(Id, "Container Colors", Version)]
+    [BepInDependency("urakka.kingdominc.foundation", "0.5.0")]
     public sealed partial class Plugin : BaseUnityPlugin
     {
-        public const string Id = "urakka.kingdominc.containercolors", Version = "1.2.0";
+        public const string Id = "urakka.kingdominc.containercolors", Version = "1.3.0";
         internal static bool Diagnostic => Environment.GetCommandLineArgs().Contains("-containercolors-smoke");
         internal Harmony hooks;
         void Awake()
         {
+            ColorResearch.EnsureRegistered();
             hooks = new Harmony(Id);
-            foreach (var patch in new[] { typeof(SaveColor), typeof(LoadColor), typeof(CopyColor), typeof(RenderColor), typeof(OpenPicker), typeof(NativeColor), typeof(Selection), typeof(RegisterResearch), typeof(ResearchIcon) })
+            foreach (var patch in new[] { typeof(SaveColor), typeof(LoadColor), typeof(CopyColor), typeof(RenderColor), typeof(OpenPicker), typeof(NativeColor), typeof(Selection) })
                 hooks.CreateClassProcessor(patch).Patch();
             if (Diagnostic) { InstallDiagnostics(); Application.runInBackground = true; StartCoroutine(RuntimeCheck()); }
             Logger.LogInfo("Container Colors ready: color picker with native save fallback.");
         }
         void Start()
         {
-            // Native research initialization needs the game's language settings.
-            ColorResearch.EnsureRegistered();
             hooks.Patch(AccessTools.Method(typeof(TechNode), nameof(TechNode.GetCost)),
                 prefix: new HarmonyMethod(typeof(Plugin), nameof(ResearchPrice)));
         }
@@ -37,23 +37,13 @@ namespace KingdomContainerColors
             if (__instance.Identifier != ColorResearch.TechId) return true;
             __result = ColorResearch.Price(); return false;
         }
-        [HarmonyPatch(typeof(GamePlayer), MethodType.Constructor)]
-        static class RegisterResearch { static void Prefix() => ColorResearch.EnsureRegistered(); }
         void OnDestroy()
         {
+            ColorResearch.Release();
             hooks?.UnpatchSelf();
             foreach (var picker in FindObjectsByType<ContainerPicker>(FindObjectsInactive.Include, FindObjectsSortMode.None)) Destroy(picker.gameObject);
             ColorRendering.Release();
             ColorArtwork.Release();
-        }
-        [HarmonyPatch(typeof(SpriteLibrary), nameof(SpriteLibrary.Get), new[] { typeof(string) })]
-        static class ResearchIcon
-        {
-            static bool Prefix(string name, ref Sprite __result)
-            {
-                if (name != ColorArtwork.IconId) return true;
-                __result = ColorArtwork.Sprite; return false;
-            }
         }
         [HarmonyPatch(typeof(FlowDeco), nameof(FlowDeco.ToJson))]
         static class SaveColor { static void Postfix(FlowDeco __instance, ref JsonValue __result) => ColorData.Write(__instance, ref __result); }
