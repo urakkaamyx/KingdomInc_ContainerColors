@@ -1,25 +1,55 @@
-# Custom Container Colors
+﻿# Custom Container Colors
 
-Choose any RGB color for containers and labels in Kingdom Inc. Use the live color picker, six-digit hex entry, opacity slider, or quick swatches. Labels keep their text editing and automatic sizing; containers keep their borders, resizing, locking, and anchoring.
+[GitHub releases](https://github.com/urakkaamyx/KingdomInc_ContainerColors/releases) · [Nexus Mods](https://www.nexusmods.com/kingdominc/mods/11) · Version 1.3.0
 
-## Install and update
+Choose any RGB color for containers and labels in Kingdom Inc with a live color picker, hex entry, opacity controls, and quick swatches. Labels keep their text editing and automatic sizing; containers keep their borders, resizing, locking, and anchoring.
 
-Install the requirements listed on the [Nexus page](https://www.nexusmods.com/kingdominc/mods/11), then close the game and extract the ZIP into the KingdomInc game folder. The installed file must be `BepInEx/plugins/ContainerColors/ContainerColors.dll`. Restart the game after installation or an update.
+## Features
 
-## Use
+- **Live Color Picker:** Choose hue, saturation, and brightness with real-time visual preview.
+- **Hex Code Input:** Enter precise six-digit hex RGB codes (e.g. `#AF78E2`) with instant updates.
+- **Opacity Slider:** Adjust transparency from fully opaque to subtle tinting.
+- **Quick Swatches:** Instant access to palette presets plus the original five vanilla styles.
+- **Label & Container Support:** Applies seamlessly across both workshop containers and standalone labels.
+- **Persistent Storage:** Custom colors survive saving, reloading, and duplicating decorations.
+- **Safe Fallback:** Built-in fallback colors keep saves intact and loadable if the mod is removed.
 
-Research **Container Colors** under **Tech Tree > Mods** after unlocking **Stickers**. It costs **25% more than Stickers**, rounded up, using the same currencies and prestige discounts. Existing research purchases remain unlocked after updating.
+## Research
+
+Find **Container Colors** under **Tech Tree > Mods** after unlocking **Stickers**. It costs 25% more than Stickers, rounded up, using the same currencies and prestige discounts. Existing research purchases remain unlocked after updating.
+
+## Using the Picker
 
 Open a container or label's edit/options menu. Choose a hue and then saturation and brightness, or enter six hex digits such as `#AF78E2` and press Enter. Drag **Opacity** to adjust transparency. Changes apply immediately.
 
-The original five swatches restore native styles. **Original color** removes custom styling and uses the nearest built-in fallback. The label text field stays above the picker. Stickers keep their original behavior.
+The original five swatches restore native styles. **Original color** removes custom styling and uses the nearest built-in fallback. The label text field remains above the picker. Stickers keep their original behavior.
 
-## Saves and removal
+## Installation
 
-Colors and opacity persist when saving and copying decorations. Close the game and delete `BepInEx/plugins/ContainerColors` to remove the mod. Containers and labels continue to load with built-in fallback colors and normal opacity.
+1. Install [BepInEx 5 (Windows x64 Mono)](https://github.com/BepInEx/BepInEx/releases/tag/v5.4.23.6).
+2. Install [Foundation](https://www.nexusmods.com/kingdominc/mods/18) (0.11.0 or newer).
+3. Extract the release ZIP into your Kingdom Inc game folder.
+4. Confirm the file is located at `BepInEx/plugins/ContainerColors/ContainerColors.dll`.
+5. Launch the game and research Container Colors in the Tech Tree!
 
-Saving without the mod discards custom color data and its research unlock. Keep a save backup if you want the exact custom colors available when reinstalling.
+## Compatibility
 
-By rockyamyx / Urakka. Research icon and promotional thumbnail use AI-generated artwork.
+| Class.Method | Hook Type | Impact |
+|---|---|---|
+| FlowDeco.CreateCopy | Harmony Postfix | Copies custom container color data when duplicating or copying decorations. |
+| FlowDeco.FromJson | Harmony Postfix | Restores saved custom container colors and opacity from kingdom save data. |
+| DecoOptionsStyle.StyleSelected | Harmony Prefix / Postfix | Handles selecting native style swatches and resetting custom colors. |
+| DecoOptionsPopup.OnEnable | Harmony Postfix | Injects the custom color picker and hex controls into the container decoration menu. |
+| WorldFlowDeco.UpdateStyle | Harmony Postfix | Renders custom colors and opacity onto container sprites and borders in the world. |
+| FlowDeco.ToJson | Harmony Postfix | Serializes custom container RGB and opacity values into kingdom save files. |
+| DecoOptionsStyle._updateSelection | Harmony Postfix | Highlights the active style swatch or clears selection when custom color is active. |
 
-Source repository: https://github.com/urakkaamyx/KingdomInc_ContainerColors
+## Saves and Removal
+
+Colors and opacity persist when saving and copying decorations. Close the game and delete `BepInEx/plugins/ContainerColors/` to remove the mod. Containers and labels load with built-in fallback colors and normal opacity.
+
+Saving without the mod discards custom color data and its research unlock. Keep a save backup if you want those exact colors available after reinstalling.
+
+## Credits and Source
+
+Created by **Urakka** (rockyamyx). [Source code on GitHub](https://github.com/urakkaamyx/KingdomInc_ContainerColors). Research icon and promotional thumbnail use AI-generated artwork.

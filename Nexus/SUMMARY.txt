@@ -1,1 +1,0 @@
-Choose any RGB color for containers and labels with a live picker, hex entry, opacity and quick swatches. Unlock Container Colors under Tech Tree > Mods after Stickers. Saved colors retain a built-in fallback for safe removal.
