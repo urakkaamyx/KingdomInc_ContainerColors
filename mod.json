@@ -7,8 +7,8 @@
   "repository": {
     "platform": "GitHub",
     "owner": "KingdomIncModding",
-    "name": "KingdomInc_ContainerColors",
-    "url": "https://github.com/KingdomIncModding/KingdomInc_ContainerColors",
+    "name": "ContainerColors",
+    "url": "https://github.com/KingdomIncModding/ContainerColors",
     "branch": "main",
     "visibility": "public",
     "topics": [
@@ -62,7 +62,7 @@
     "gameIntegration": "Foundation"
   },
   "publishing": {
-    "githubReleases": "https://github.com/KingdomIncModding/KingdomInc_ContainerColors/releases/tag/v1.3.0",
+    "githubReleases": "https://github.com/KingdomIncModding/ContainerColors/releases/tag/v1.3.0",
     "nexusMods": "https://www.nexusmods.com/kingdominc/mods/11",
     "archivePreviousReleases": false
   }
