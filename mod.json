@@ -6,9 +6,9 @@
   "description": "For Kingdom Inc game version 1.0.14. Choose any RGB color for containers and labels in Kingdom Inc with live color picker, hex code input, opacity slider, and persistent save support.",
   "repository": {
     "platform": "GitHub",
-    "owner": "urakkaamyx",
+    "owner": "KingdomIncModding",
     "name": "KingdomInc_ContainerColors",
-    "url": "https://github.com/urakkaamyx/KingdomInc_ContainerColors",
+    "url": "https://github.com/KingdomIncModding/KingdomInc_ContainerColors",
     "branch": "main",
     "visibility": "public",
     "topics": [
@@ -62,7 +62,7 @@
     "gameIntegration": "Foundation"
   },
   "publishing": {
-    "githubReleases": "https://github.com/urakkaamyx/KingdomInc_ContainerColors/releases/tag/v1.3.0",
+    "githubReleases": "https://github.com/KingdomIncModding/KingdomInc_ContainerColors/releases/tag/v1.3.0",
     "nexusMods": "https://www.nexusmods.com/kingdominc/mods/11",
     "archivePreviousReleases": false
   }

@@ -2,7 +2,7 @@
 
 **Current release: 1.3.1 — for Kingdom Inc game version 1.0.14.**
 
-[GitHub releases](https://github.com/urakkaamyx/KingdomInc_ContainerColors/releases) · [Nexus Mods](https://www.nexusmods.com/kingdominc/mods/11) · Version 1.3.1
+[GitHub releases](https://github.com/KingdomIncModding/KingdomInc_ContainerColors/releases) · [Nexus Mods](https://www.nexusmods.com/kingdominc/mods/11) · Version 1.3.1
 
 Choose any RGB color for containers and labels in Kingdom Inc with a live color picker, hex entry, opacity controls, and quick swatches. Labels keep their text editing and automatic sizing; containers keep their borders, resizing, locking, and anchoring.
 
@@ -54,4 +54,4 @@ Saving without the mod discards custom color data and its research unlock. Keep 
 
 ## Credits and Source
 
-Created by **Urakka** (rockyamyx). [Source code on GitHub](https://github.com/urakkaamyx/KingdomInc_ContainerColors). Research icon and promotional thumbnail use AI-generated artwork.
+Created by **Urakka** (rockyamyx). [Source code on GitHub](https://github.com/KingdomIncModding/KingdomInc_ContainerColors). Research icon and promotional thumbnail use AI-generated artwork.
